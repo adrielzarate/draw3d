@@ -68,12 +68,22 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         });
 
-        document.addEventListener('keydown', function(event) {
-          if (event.ctrlKey && event.key === 'z') {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            texture.needsUpdate = true;
-          }
+        document.addEventListener('keydown', function(ev) {
+            if (event.key === 'z' && (ev.ctrlKey || ev.metaKey)){
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                texture.needsUpdate = true;
+            }
+
+            // if ((ev.ctrlKey || ev.metaKey)){
+            //     containerEl.style.display = 'none';
+            // }
         });
+
+        // document.addEventListener('keyup', function(ev) {
+        //     if (ev.code === 'MetaLeft' || ev.code === 'ControlLeft') {
+        //         containerEl.style.display = 'block';
+        //     }
+        // });
 
         const pos = { x: 0, y: 0 };
 
@@ -100,7 +110,7 @@
             var material = new THREE.MeshBasicMaterial({ map: texture });
                   material.alphaTest = 0.5;
                   material.side = THREE.DoubleSide;
-            geometry = new THREE.PlaneBufferGeometry( 200, 200, 200 );
+            geometry = new THREE.PlaneBufferGeometry( WWidth, WHeight, 0 );
             mesh = new THREE.Mesh( geometry, material );
                   mesh.rotation.x = camera.rotation.x;
                   mesh.rotation.y = camera.rotation.y;
@@ -120,12 +130,14 @@
 
             scene = new THREE.Scene();
 
-            camera = new THREE.PerspectiveCamera(70, WWidth / WHeight, 1, 1000);
+            camera = new THREE.PerspectiveCamera(66, WWidth / WHeight, 1, 1000);
             camera.position.z = 500;
             scene.add(camera);
 
             controls = new THREE.OrbitControls( camera, renderer.domElement );
             controls.enableZoom = false;
+            controls.enablePan = false;
+            controls.enableKeys = true
             addNewLayer();
         }
 
