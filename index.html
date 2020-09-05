@@ -15,7 +15,7 @@
                 left: 0;
                 top: 0;
             }
-            label {
+            .checkboxsContainer {
                 position: absolute;
                 top: 0;
                 right: 0;
@@ -62,11 +62,24 @@
         document.addEventListener('mousedown', setPosition);
         document.addEventListener('mouseenter', setPosition);
 
-        const checkboxEl = document.getElementById('toggleDrawRotation');
-        checkboxEl.addEventListener('change', (ev) => {
+        const checkboxEnableRotationEl = document.getElementById('toggleDrawRotation');
+        checkboxEnableRotationEl.addEventListener('change', (ev) => {
+            console.log('a');
             containerEl.style.display = (ev.target.checked) ? 'none' : 'block';
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         });
+
+        // const checkboxEnableYEl = document.getElementById('toggleEnableY');
+        // checkboxEnableYEl.addEventListener('change', (ev) => {
+        //     console.log('b');
+        //     if (ev.target.checked) {
+        //         controls.minPolarAngle = Math.PI;
+        //         controls.maxPolarAngle = Math.PI;
+        //     } else {
+        //         controls.minPolarAngle = Math.PI/2;
+        //         controls.maxPolarAngle = Math.PI/2;
+        //     }
+        // });
 
         document.addEventListener('keydown', function(ev) {
             if (event.key === 'z' && (ev.ctrlKey || ev.metaKey)){
@@ -130,7 +143,6 @@
 
             scene = new THREE.Scene();
 
-            // camera = new THREE.PerspectiveCamera(50, WWidth / WHeight, 1, 1000);
             camera = new THREE.OrthographicCamera( WWidth / - 2, WWidth / 2, WHeight / 2, WHeight / - 2, 1, 1000 );
             camera.position.z = 500;
             scene.add(camera);
@@ -138,7 +150,11 @@
             controls = new THREE.OrbitControls( camera, renderer.domElement );
             controls.enableZoom = false;
             controls.enablePan = false;
-            controls.enableKeys = true
+            controls.enableKeys = false;
+
+            // controls.minPolarAngle = Math.PI/2;
+            // controls.maxPolarAngle = Math.PI/2;
+
             addNewLayer();
         }
 
@@ -154,10 +170,17 @@
 
     <div id="container"></div>
 
-    <label for="toggleDrawRotation">
-        Move
-        <input type="checkbox" id="toggleDrawRotation">
-    </label>
+    <div class="checkboxsContainer">
+        <label for="toggleDrawRotation">
+            Move
+            <input type="checkbox" id="toggleDrawRotation">
+        </label>
+
+<!--         <label for="toggleEnableY">
+            Enable Y
+            <input type="checkbox" id="toggleEnableY">
+        </label> -->
+    </div>
 
     </body>
 

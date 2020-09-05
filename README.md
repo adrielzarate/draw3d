@@ -1,0 +1,1 @@
+<img src="animation.gif" alt="animation" width="600"/>
