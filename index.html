@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>draw-3d</title>
+        <style>
+            body {
+                margin: 0;
+            }
+
+            canvas {
+                position: absolute;
+                border: red solid thin;
+                left: 0;
+                top: 0;
+            }
+            label {
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+            #container {
+                position: absolute;
+                border: red solid thin;
+                left: 0;
+                top: 0;
+                z-index: 1000;
+            }
+        </style>
+    </head>
+
+    <body>
+    <script src="js/three.min.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script type="module">
+
+        const WWidth = window.innerWidth * .75;
+        const WHeight = window.innerHeight;
+
+        const containerEl = document.getElementById('container');
+        containerEl.style.width = `${WWidth}px`;
+        containerEl.style.height = `${WHeight}px`;
+
+        var camera, scene, renderer, geometry, texture, mesh, controls, canvas, ctx;
+
+
+
+            canvas = document.createElement('canvas');
+            canvas.className = 'draw';
+            const hrEl = document.getElementsByTagName('label')[0];
+            containerEl.appendChild(canvas);
+            ctx = canvas.getContext('2d');
+
+            canvas.width = WWidth;
+            canvas.height = WHeight;
+
+            canvas.addEventListener('click', addNewLayer);
+
+
+        document.addEventListener('mousemove', draw);
+        document.addEventListener('mousedown', setPosition);
+        document.addEventListener('mouseenter', setPosition);
+
+        const checkboxEl = document.getElementById('toggleDrawRotation');
+        checkboxEl.addEventListener('change', (ev) => {
+            containerEl.style.display = (ev.target.checked) ? 'none' : 'block';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+
+        const pos = { x: 0, y: 0 };
+
+        function setPosition(e) {
+            pos.x = e.clientX;
+            pos.y = e.clientY;
+        }
+
+        function draw(e) {
+          if (e.buttons !== 1) return;
+          ctx.beginPath();
+          ctx.lineWidth = 5;
+          ctx.lineCap = 'round';
+          ctx.strokeStyle = '#c0392b';
+          ctx.moveTo(pos.x, pos.y);
+          setPosition(e);
+          ctx.lineTo(pos.x, pos.y);
+          ctx.stroke();
+        }
+
+        function addNewLayer() {
+
+            texture = new THREE.Texture(canvas);
+            var material = new THREE.MeshBasicMaterial({ map: texture });
+                  material.alphaTest = 0.5;
+                  material.side = THREE.DoubleSide;
+            geometry = new THREE.PlaneBufferGeometry( 200, 200, 200 );
+            mesh = new THREE.Mesh( geometry, material );
+                  mesh.rotation.x = camera.rotation.x;
+                  mesh.rotation.y = camera.rotation.y;
+                  mesh.rotation.z = camera.rotation.z;
+            scene.add( mesh );
+            texture.needsUpdate = true;
+
+        }
+
+        function init() {
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize(WWidth, WHeight);
+            renderer.setClearColor( 0xffffff, 1);
+            renderer.domElement.id = 'threeLayer';
+
+            document.body.appendChild(renderer.domElement);
+
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(70, WWidth / WHeight, 1, 1000);
+            camera.position.z = 500;
+            scene.add(camera);
+
+            controls = new THREE.OrbitControls( camera, renderer.domElement );
+            addNewLayer();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        init();
+        animate();
+    </script>
+
+    <div id="container"></div>
+
+    <label for="toggleDrawRotation">
+        Move
+        <input type="checkbox" id="toggleDrawRotation">
+    </label>
+
+    </body>
+
+</html>
