@@ -68,6 +68,13 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         });
 
+        document.addEventListener('keydown', function(event) {
+          if (event.ctrlKey && event.key === 'z') {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            texture.needsUpdate = true;
+          }
+        });
+
         const pos = { x: 0, y: 0 };
 
         function setPosition(e) {
@@ -118,6 +125,7 @@
             scene.add(camera);
 
             controls = new THREE.OrbitControls( camera, renderer.domElement );
+            controls.enableZoom = false;
             addNewLayer();
         }
 
